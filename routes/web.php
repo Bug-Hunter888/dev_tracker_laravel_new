@@ -20,6 +20,7 @@ use App\Http\Controllers\LabelController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\TeamInvitationController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -119,6 +120,13 @@ Route::middleware([
         Auth::user()->unreadNotifications->markAsRead();
         return response()->json(['ok' => true]);
     })->name('notifications.readAll');
+});
+
+// Billing routes — auth required but NOT gated by onboarded (users can upgrade at any time)
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
+    Route::get('/billing/upgrade',   [BillingController::class, 'upgrade'])  ->name('billing.upgrade');
+    Route::post('/billing/subscribe', [BillingController::class, 'subscribe'])->name('billing.subscribe');
+    Route::get('/billing/success',   [BillingController::class, 'success'])  ->name('billing.success');
 });
 
 // Super-admin routes

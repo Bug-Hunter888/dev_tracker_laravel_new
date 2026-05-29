@@ -37,15 +37,26 @@ class CreateNewUser implements CreatesNewUsers
             ]), function (User $user) use ($input) {
                 $this->createTeam($user);
 
-                // If a valid invitation exists for this email, skip onboarding —
-                // AddTeamMember will switch them into the right team on acceptance.
-                $hasPendingInvite = TeamInvitation::where('email', $input['email'])
+                // Auto-accept any pending invitations so the user is added to the
+                // invited team immediately instead of getting stuck in onboarding.
+                $pendingInvites = TeamInvitation::where('email', $input['email'])
                     ->where('status', 'pending')
                     ->where(fn ($q) => $q->whereNull('expires_at')->orWhere('expires_at', '>', now()))
-                    ->exists();
+                    ->with('team.owner')
+                    ->get();
 
-                if ($hasPendingInvite) {
-                    $user->forceFill(['is_onboarded' => true])->save();
+                foreach ($pendingInvites as $invite) {
+                    try {
+                        app(\Laravel\Jetstream\Contracts\AddsTeamMembers::class)->add(
+                            $invite->team->owner,
+                            $invite->team,
+                            $user->email,
+                            $invite->role ?? 'editor',
+                        );
+                        $invite->delete();
+                    } catch (\Throwable $e) {
+                        // If auto-accept fails, user can still click the email link later
+                    }
                 }
             });
         });

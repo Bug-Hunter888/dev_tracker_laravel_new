@@ -22,7 +22,7 @@
     <nav class="border-b-4 border-white bg-black sticky top-0 z-50" x-data="{ mobileOpen: false }">
         <div class="flex justify-between items-center px-6 py-4">
             <div class="flex items-center gap-6">
-                <a href="{{ route('dashboard') }}" class="text-xl font-bold text-neon-green tracking-tighter">
+                <a href="{{ route('home') }}" class="text-xl font-bold text-neon-green tracking-tighter">
                     ./DevTracker_
                 </a>
                 @if(auth()->user()?->currentTeam)
@@ -45,6 +45,12 @@
                 <a href="{{ route('labels.index') }}" class="text-sm text-gray-400 hover:text-neon-green transition-colors hidden md:inline">
                     LABELS
                 </a>
+
+                @if(auth()->user()?->currentTeam && in_array(auth()->user()->currentTeam->plan ?? 'free', ['free']))
+                <a href="{{ route('billing.upgrade') }}" class="text-xs text-black font-bold bg-neon-green px-2 py-1 hover:bg-neon-green/80 transition-colors hidden md:inline font-mono uppercase tracking-wider">
+                    UPGRADE
+                </a>
+                @endif
                 @endunless
 
                 {{-- Search --}}
@@ -122,6 +128,14 @@
                                 > TEAM_SETTINGS
                             </a>
                         @endif
+                        @unless(auth()->user()->is_admin)
+                        @if(auth()->user()?->currentTeam && in_array(auth()->user()->currentTeam->plan ?? 'free', ['free']))
+                        <a href="{{ route('billing.upgrade') }}"
+                           class="block px-4 py-3 text-sm text-neon-green font-bold hover:bg-neon-green/10 border-b border-gray-800 transition-colors">
+                            > UPGRADE PLAN
+                        </a>
+                        @endif
+                        @endunless
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit"

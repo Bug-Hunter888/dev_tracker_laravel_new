@@ -6,6 +6,7 @@ use App\Events\TaskMoved;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\TaskActivity;
+use App\Notifications\TaskActionNotification;
 use App\Services\AutomationService;
 use Illuminate\Http\Request;
 
@@ -86,6 +87,18 @@ class TaskController extends Controller
         } catch (\Exception $e) {
             // Reverb server not running — real-time update skipped, page redirect still works
         }
+
+        // Notify team members about the status change
+        $mover  = auth()->user()->name;
+        $label  = strtoupper($newStatus);
+        $notify = new TaskActionNotification(
+            $task,
+            "{$mover} moved \"{$task->title}\" → {$label}"
+        );
+
+        $task->project->team->allUsers()
+            ->reject(fn($u) => $u->id === auth()->id())
+            ->each(fn($u) => $u->notify($notify));
 
         $trigger = match ($newStatus) {
             'done'  => 'task_marked_done',

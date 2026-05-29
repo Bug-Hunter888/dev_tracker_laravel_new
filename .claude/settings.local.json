@@ -45,10 +45,26 @@
       "Bash(git init *)",
       "Bash(git add *)",
       "Bash(git rm *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(git remote *)",
+      "Bash(git branch *)",
+      "Bash(git push *)",
+      "PowerShell(php artisan route:list --name=billing 2>&1)",
+      "PowerShell(php -l \"c:\\\\Xampp\\\\htdocs\\\\devtracker-laravel\\\\app\\\\Http\\\\Controllers\\\\BillingController.php\" 2>&1)",
+      "PowerShell(php artisan route:list --name=home 2>&1)",
+      "PowerShell(php -l resources/views/welcome/hero.blade.php 2>&1)",
+      "PowerShell(php -l resources/views/welcome/cta.blade.php 2>&1)",
+      "Bash(mkdir -p /cygdrive/c/Xampp/htdocs/devtracker-laravel/resources/views/mail 2>/dev/null; echo \"done\")",
+      "PowerShell(php -l \"c:\\\\Xampp\\\\htdocs\\\\devtracker-laravel\\\\app\\\\Mail\\\\SubscriptionConfirmed.php\" 2>&1)",
+      "PowerShell(php -l \"c:\\\\Xampp\\\\htdocs\\\\devtracker-laravel\\\\app\\\\Http\\\\Controllers\\\\MessageController.php\" 2>&1)",
+      "PowerShell(php -l \"c:\\\\Xampp\\\\htdocs\\\\devtracker-laravel\\\\app\\\\Http\\\\Controllers\\\\TaskController.php\" 2>&1)",
+      "PowerShell(php -l \"c:\\\\Xampp\\\\htdocs\\\\devtracker-laravel\\\\app\\\\Notifications\\\\NewMessageNotification.php\" 2>&1)",
+      "Bash(php -l c:/Xampp/htdocs/devtracker-laravel/app/Actions/Fortify/CreateNewUser.php)",
+      "Bash(php -l c:/Xampp/htdocs/devtracker-laravel/app/Http/Controllers/TeamInvitationController.php)"
     ],
     "additionalDirectories": [
-      "C:\\Xampp\\htdocs\\devtracker-laravel\\app\\Http\\Controllers"
+      "C:\\Xampp\\htdocs\\devtracker-laravel\\app\\Http\\Controllers",
+      "\\cygdrive\\c\\Xampp\\htdocs\\devtracker-laravel\\resources\\views"
     ]
   }
 }

@@ -10,7 +10,17 @@ class TeamInvitationController extends Controller
 {
     public function accept(Request $request, $invitationId)
     {
-        $invitation = TeamInvitation::findOrFail($invitationId);
+        $invitation = TeamInvitation::find($invitationId);
+
+        // Invitation was already consumed (auto-accepted during registration)
+        if (! $invitation) {
+            if (auth()->check()) {
+                return redirect()->route('dashboard')
+                    ->with('success', 'You are already a team member — welcome!');
+            }
+            return redirect()->route('login')
+                ->with('status', 'This invitation has already been used. Please log in to access your team.');
+        }
 
         // Expired check
         if ($invitation->isExpired()) {
@@ -39,7 +49,7 @@ class TeamInvitationController extends Controller
                 ->with('status', 'Please create an account to join ' . $team->name . '.');
         }
 
-        // Add member to team (this also sets is_onboarded=true and switches current_team)
+        // Add member to team (sets is_onboarded=true and switches current_team_id)
         app(AddsTeamMembers::class)->add(
             $team->owner,
             $team,

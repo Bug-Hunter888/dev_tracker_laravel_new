@@ -69,16 +69,24 @@
                 </ul>
 
                 {{-- CTA --}}
-                @if (Route::has('register'))
-                    @if($plan['cta_type'] === 'primary')
-                        <a href="{{ route('register') }}" class="btn-primary text-center justify-center text-sm">
-                            {{ $plan['cta'] }}
-                        </a>
-                    @else
-                        <a href="{{ route('register') }}" class="btn-secondary text-center justify-center text-sm">
-                            {{ $plan['cta'] }}
-                        </a>
-                    @endif
+                @php
+                    $planSlug = strtolower($plan['name']); // free, pro, team
+                    if (auth()->check() && in_array($planSlug, ['pro', 'team'])) {
+                        $ctaHref = route('billing.upgrade', ['plan' => $planSlug]);
+                    } elseif (auth()->check()) {
+                        $ctaHref = route('dashboard');
+                    } else {
+                        $ctaHref = route('register');
+                    }
+                @endphp
+                @if($plan['cta_type'] === 'primary')
+                    <a href="{{ $ctaHref }}" class="btn-primary text-center justify-center text-sm">
+                        {{ $plan['cta'] }}
+                    </a>
+                @else
+                    <a href="{{ $ctaHref }}" class="btn-secondary text-center justify-center text-sm">
+                        {{ $plan['cta'] }}
+                    </a>
                 @endif
 
             </div>

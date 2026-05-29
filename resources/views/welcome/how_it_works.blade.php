@@ -1,5 +1,5 @@
 {{-- ═══ HOW IT WORKS ═══ --}}
-<section class="py-24" style="background:#0a0a0a;border-top:1px solid #161616;">
+<section id="how" class="py-28" style="background:#0a0a0a;border-top:1px solid #111;">
     <div class="max-w-3xl mx-auto px-6">
 
         <div class="mb-14 reveal">

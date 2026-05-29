@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\MessageSent;
+use App\Notifications\NewMessageNotification;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
@@ -40,6 +41,21 @@ class MessageController extends Controller
 
         $message->load('user');
         broadcast(new MessageSent($message))->toOthers();
+
+        // Notify every team member except the sender
+        $preview = mb_strlen($request->content) > 50
+            ? mb_substr($request->content, 0, 50) . '…'
+            : $request->content;
+
+        $notification = new NewMessageNotification(
+            senderName: auth()->user()->name,
+            preview:    $preview,
+            teamName:   $team->name,
+        );
+
+        $team->allUsers()
+            ->reject(fn($u) => $u->id === auth()->id())
+            ->each(fn($u) => $u->notify($notification));
 
         return response()->json([
             'id'         => $message->id,
